@@ -13,22 +13,21 @@ import TranslationBannerPartial from "../stylus/partials/_stylus-translation-ban
 
 <TranslationBannerPartial />
 
-# Orbitチェーンのイントロダクション
 この文書は、独自の <a data-quicklook-from='layer-2-l2'>Arbitrum Rollup</a>および <a data-quicklook-from='layer-2-l2'>AnyTrust</a>チェーンを作成できる**Arbitrum Orbit**という新しい製品について知りたい開発者および意思決定者のためのものです。
 
 実際に作成しながら学びたい場合は、独自のOrbitチェーンを設定、起動する手順を詳細に説明した[Orbitクイックスタート](https://docs.arbitrum.io/launch-orbit-chain/orbit-quickstart)を参照してください。
 
-import PublicPreviewBannerPartial from '../partials/_public-preview-banner-partial.md';
+import PublicPreviewBannerPartial from './partials/_orbit-public-preview-banner-partial.md';
 
 <PublicPreviewBannerPartial />
 
 ### 要約
 - Arbitrum Orbitを使用すると、<a data-quicklook-from='arbitrum-one'>Arbitrum One</a>、<a data-quicklook-from="arbitrum-nova">Arbitrum Nova</a>、**Arbitrum Goerli**、または**Arbitrum Sepolia**などの<a data-quicklook-from='layer-2-l2'>レイヤー2 (L2)</a>チェーン上に**独自のブロックチェーンが作成できます**。
-- **独自のOrbitチェーンを所有**し、そのプライバシー、権限、手数料トークン、ガバナンスなどをカスタマイズできます。
+- **独自のOrbitチェーンを所有し**、そのプライバシー、権限、手数料トークン、ガバナンスなどをカスタマイズできます。
 - Arbitrum Orbitにより可能になることの例：
-    - Nitroのfraud proofsや高度な圧縮、[Stylusを介したEVM+互換性](https://medium.com/offchainlabs/hello-stylus-6b18fecc3a22)、および継続的な改良などの恩恵恩恵を受けられる、**Nitro<a data-quicklook-from='arbitrum-nitro'>Nitro</a>を搭載した分散型のブロックチェーンネットワークの立ち上げ**。
+    - Nitroのfraud proofsや高度な圧縮、[Stylusを介したEVM+互換性](https://medium.com/offchainlabs/hello-stylus-6b18fecc3a22)、および継続的な改良などの恩恵恩恵を受けられる、**<a data-quicklook-from='arbitrum-nitro'>Nitro</a>を搭載した分散型のブロックチェーンネットワークの立ち上げ**。
     - Orbitチェーンがデフォルトで提供する、専用のスループットとトラフィック分離によりエンドユーザーに対して**安定したガス代**を提供できます。
-    - チェーンのデータを読むことや、スマートコントラクトをチェーンにデプロイできる人を**アクセス許可**設定を行うことでコントロールできます。EthereumやArbitrum One<a data-quicklook-from="arbitrum-one">Arbitrum One</a>のように完全に無許可にすることも可能ですが、独自のアクセス許可を実装することも可能です。
+    - チェーンのデータを読むことや、スマートコントラクトをチェーンにデプロイできる人を**アクセス許可**設定を行うことでコントロールできます。Ethereumや<a data-quicklook-from="arbitrum-one">Arbitrum One</a>のように完全に無許可にすることも可能ですが、独自のアクセス許可を実装することも可能です。
     - **ガス代として使用するトークンを選択する**ことで、ドメイン固有のメカニズム設計と価値獲得の機会を迅速に繰り返すことができます。
 
 ### Orbitとは？
@@ -58,13 +57,14 @@ import {
     <NodeDescription for="1,2,3">
       <strong>Arbitrum Orbit</strong> is a new product offering that lets you create your own chain
       that settles to one of Arbitrum's public Layer 2 (L2) chains.
+      <strong>Arbitrum Orbit</strong>は、Arbitrumのパブリックレイヤー2（L2）チェーンの1つに決済する独自のチェーンを作成できる新しい製品です。
     </NodeDescription>
     <NodeDescription for="4">
       <strong>Arbitrum One</strong>, <strong>Arbitrum Nova</strong>, and{' '}
-      <strong>Arbitrum Goerli</strong> are public Layer 2 (L2) chains that settle to Ethereum.
+      <strong>Arbitrum Goerli</strong>はEthereumに決済するパブリックレイヤー2（L2）チェーンです。
     </NodeDescription>
     <NodeDescription for="5">
-      <strong>Ethereum</strong> is a public Layer 1 (L1) chain.
+      <strong>Ethereum</strong>はパブリックレイヤー1（L1）チェーンです。
     </NodeDescription>
   </NodeDescriptions>
 </MermaidWithHtml>
@@ -83,7 +83,7 @@ import {
 ### Orbitが解決する課題
 Ethereumエコシステムは、それぞれがEthereumのレイヤー1（L1）クライアントソフトウェアを実行する**分散型ノードネットワーク**によってサポートされています。 Ethereumのブロックスペースは高い需要があり、ユーザーはネットワークの混雑の軽減を待つことがよくあります（混雑が軽減されればコストが下がるため）。
 
-<a data-quicklook-from='arbitrum-rollup-protocol'>Arbitrum Rollup</a>および<a data-quicklook-from='arbitrum-anytrust-protocol'>AnyTrust</a>プロトコルは、この課題に対処するために、Ethereumネットワークの一部の重要な処理を、それぞれ<a data-quicklook-from="arbitrum-one">Arbitrum One</a>と<a data-quicklook-from="arbitrum-nova">Arbitrum Nova</a>のL2チェーンをサポートする**分散ノードネットワーク**にオフロードすることで対処しています。
+<a data-quicklook-from='arbitrum-rollup-protocol'>Arbitrum Rollup</a>および<a data-quicklook-from='arbitrum-anytrust-protocol'>AnyTrust</a>プロトコルは、この課題に対処するために、Ethereumネットワークの一部の重要な処理を、それぞれ<a data-quicklook-from="arbitrum-one">Arbitrum One</a>と<a data-quicklook-from="arbitrum-nova">Arbitrum Nova</a>のL2チェーンをサポートする**分散型ノードネットワーク**にオフロードすることで対処しています。
 
 2つのチェーン間には重要な違いがあります。RollupとAnyTrustの選択は、分散性と性能の**トレードオフ**を表しています：
 
@@ -140,7 +140,7 @@ OrbitはEthereumがマルチチェーンの未来に向かうのを支援しま�
 
 ### Orbitチェーンは他のOrbitチェーンと通信できますか？
 
-はい！すべてのOrbitチェーンは、自己管理のノードを実行し、<a data-quicklook-from="arbitrum-nitro">Arbitrum Nitro</a>のノードソフトウェアの独自のインスタンスを実行しています。このソフトウェアは**AnyTrust**および**Rollup*:プロトコルの両方を実装しており、Orbitチェーンはそのどちらかを使用してトランザクションを処理および決済するように設定できます。[^2]
+はい！すべてのOrbitチェーンは、自己管理のノードを実行し、<a data-quicklook-from="arbitrum-nitro">Arbitrum Nitro</a>のノードソフトウェアの独自のインスタンスを実行しています。このソフトウェアは**AnyTrust**および**Rollup**:プロトコルの両方を実装しており、Orbitチェーンはそのどちらかを使用してトランザクションを処理および決済するように設定できます[^2]。
 
 これは、Orbitチェーンが**完全に孤立したブロックチェーンネットワークではない**ことを意味します。Orbitチェーンは、お互いに情報を交換できる連携チェーンのエコシステムに参加できます。
 
@@ -151,7 +151,7 @@ Orbitのプロダクトロードマップは、Ethereumの分散型ウェブの�
 
 ### Orbitのライセンスについて知るべきことは何ですか？
 
-ユーザーは、自身のニーズに合わせてArbitrum Nitroのコードベースを自由に変更および適応する権限を与えられています。Orbitチェーンに対するライセンスは永続的で再帰的です：
+ユーザーは、自身のニーズに合わせてArbitrum Nitroのコードベースを自由に変更および適応する権限を与えられています。Orbitチェーンに対するライセンスは**永続的**で**再帰的**です：
 - **永続的** - 誰もソフトウェアライセンスを取り上げることはできません
 - **再帰的** - Orbitチェーン自体が同じライセンスに従う他のチェーンをホストできます
 

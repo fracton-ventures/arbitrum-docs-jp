@@ -1,7 +1,8 @@
 ---
-title: 'クイックスタート：Orbitチェーンをローンチする'
+title: 'クイックスタート：Orbitチェーンをローンチ'
 sidebar_label: 'クイックスタート'
 description: "Launch your own Orbit chain with the Arbitrum Nitro codebase's new license. Settle to Arbitrum's L2 chains via bridge contracts on the underlying L2 chain (Goerli or Sepolia testnets for now; One and Nova coming soon). No need for permission from the Arbitrum DAO or Offchain Labs to create your Orbit chain. Modify the Nitro codebase freely for your chain."
+translator: Ying@Fracton, Tamura (Arbitrum Ambassador), Hikaru@Fracton
 sidebar_position: 2
 target_audience: developers who want to create their own self-managed AnyTrust or One chain
 
@@ -9,39 +10,39 @@ target_audience: developers who want to create their own self-managed AnyTrust o
 
 こちらは、[Orbitチェーンデプロイメントポータル](https://orbit.arbitrum.io/)を使用して独自のArbitrum Orbitチェーンを起動したい開発者向けの文書です。
 
-このクイックスタートを最後まで進めると、EVM互換のスマートコントラクトをホストする**ローカルのdevnetチェーン**を作成できます。このチェーンはトランザクションをローカルで処理し、**Arbitrum GoerliとSepoliaテストネット**で決済されます。Ethereum、EthereumのGoerliテストネット、およびArbitrumに関する知識が必要です。
+このクイックスタートを最後まで進めると、EVM互換のスマートコントラクトをホストする**ローカルdevnetチェーン**を作成できます。このチェーンはトランザクションをローカルで処理し、**Arbitrum GoerliとSepoliaテストネット**で決済されます。Ethereum、EthereumのGoerliテストネット、およびArbitrumに関する知識が必要です。
 
 Orbitチェーンに関する概念的な紹介をお求めの場合は、[「Orbitチェーンのイントロダクション」](./orbit-gentle-introduction.md)をご覧ください。
 
 import TranslationBannerPartial from "../stylus/partials/_stylus-translation-banner-partial.md";
-import PublicPreviewBannerPartial from '../partials/_public-preview-banner-partial.md';
+import PublicPreviewBannerPartial from './partials/_orbit-public-preview-banner-partial.md';
 
 <TranslationBannerPartial />
 <PublicPreviewBannerPartial />
 
 ## 前提要件
 - [Docker](https://docs.docker.com/get-docker/)
-- ブラウザベースのEthereumウォレット （[MetaMask](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)など）
-- 1.5以上の​テストネットETH
+- ブラウザベースのEthereumウォレット（[MetaMask](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)など）
+- 最低1の​テストネットETH（カスタムガストークンの場合0.6テストネットETHと0.4ネイティブトークン）
 
-## ステップ 1: ArbitrumテストネットETHを取得する
-Orbit チェーンの**ベースコントラクト**をその**ベースチェーン**(Arbitrum Goerli または Sepolia)にデプロイするコストをカバーするには、少なくとも1.5​​テストネットETH が必要です。
+## ステップ 1: Arbitrumテストネット$ETHを取得する（Orbitチェーンでカスタムトークンを利用している場合はネイティブトークン）
+通常のオービットチェーンの場合、最低1つのテストネットの$ETHが必要です。一方、カスタムガストークンを使用したオービットチェーンの場合、0.6$ETHと0.4のネイティブトークンが必要です。これは、Orbitチェーンの**ベースコントラクト**をその**ベースチェーン**（Arbitrum GoerliまたはSepolia）にデプロイするコストをカバーするためです。Goerliは近い将来廃止される見込みですので、Sepoliaを利用することをお勧めします。
 
-このクイックスタートの作成時点で、テストネットETHを取得する最も簡単な方法は、テストネットETH をEthereumのL1 GoerliまたはSepoliaネットワークからArbitrumの対応するL2テストネットにブリッジすることです。
+このクイックスタートの作成時点で、テストネット$ETHを取得する最も簡単な方法は、テストネット$ETH をEthereumのL1 GoerliまたはSepoliaネットワークからArbitrumの対応するL2テストネットにブリッジすることです。
 
-1. [goerlifaucet.com](https://goerlifaucet.com/)や[sepoliafauset.com](https://sepoliafaucet.com/)などのL1テストネットETHフォーセットを使用して、L1テストネット上でテストネットETHを取得します。
-2. [Arbitrumブリッジ](https://bridge.arbitrum.io/)を使用して、L1テストネットETHをArbitrum L2にブリッジします。
+1. [goerlifaucet.com](https://goerlifaucet.com/)や[sepoliafauset.com](https://sepoliafaucet.com/)などのL1テストネット$ETHフォーセットを使用して、L1テストネット上でテストネット$ETHを取得します。
+2. [Arbitrumブリッジ](https://bridge.arbitrum.io/)を使用して、L1テストネット$ETHをArbitrum L2にブリッジします。
 
 ## ステップ 2: チェーンのタイプを選択する: AnyTrust またはRollup
 
 <p>
-<a data-quicklook-from="arbitrum-rollup-protocol">Arbitrum Rollup</a> はOptimistic Rollupプロトコルです。Arbitrum Rollupは <a data-quicklook-from="trustless">トラストレス</a>で、パーミッションレスです。これらの特性は、すべてのチェーンデータがEthereumのレイヤー 1 (L1)チェーンに投稿されることによって実現されています。このデータの可用性がEthereum自体のセキュリティ特性に直接依存し、その結果、どの当事者もチェーンの検証に参加し、チェーンの安全を確保できます。
+<a data-quicklook-from="arbitrum-rollup-protocol">Arbitrum Rollup</a>はOptimistic Rollupプロトコルです。Arbitrum Rollupは <a data-quicklook-from="trustless">トラストレス</a>で、パーミッションレスです。これらの特性は、すべてのチェーンデータがEthereumのレイヤー1（L1）チェーンに投稿されることによって実現されています。このデータの可用性がEthereum自体のセキュリティ特性に直接依存し、その結果、どの当事者もチェーンの検証に参加し、チェーンの安全を確保できます。
 </p>
 
 
-対照的に、 <a data-quicklook-from='arbitrum-anytrust-protocol'>Arbitrum AnyTrust</a>は手数料の引き下げと引き換えに信頼仮定を導入しています。AnyTrustではすべてのArbitrumノードが Arbitrumチェーンのinbox内のすべてのL2トランザクションのデータにアクセスすることを要求するのではなく、外部の<a data-quicklook-from='data-availability-committee-dac'>データ可用性委員会（DAC）</a>に依存してデータを保存し、オンデマンドで提供することで、L1へ投稿するL2トランザクションデータのバッチ処理と投稿のコストを削減します。 詳細については、[FAQドキュメント](../learn-more/faq)をご覧ください。
+対照的に、<a data-quicklook-from='arbitrum-anytrust-protocol'>Arbitrum AnyTrust</a>は手数料の引き下げと引き換えに信頼仮定を導入しています。AnyTrustではすべてのArbitrumノードがArbitrumチェーンのinbox内のすべてのL2トランザクションのデータにアクセスすることを要求するのではなく、外部の<a data-quicklook-from='data-availability-committee-dac'>データ可用性委員会（DAC）</a>に依存してデータを保存し、オンデマンドで提供することで、L1へ投稿するL2トランザクションデータのバッチ処理と投稿のコストを削減します。詳細については、[FAQドキュメント](../learn-more/faq)をご覧ください。
 
-通常、最高レベルのセキュリティが要求されるユースケース (DEXや他のDeFi dAppなど) にはロールアップチェーンを使用することをお勧めします。AnyTrustチェーンは、より低い手数料を必要とし、大量のトランザクションを生成するユースケース (ゲームやソーシャルdAppsなど) に適しています。
+通常、最高レベルのセキュリティが要求されるユースケース（DEXや他のDeFi dAppなど）にはロールアップチェーンを使用することをお勧めします。AnyTrustチェーンは、より低い手数料を必要とし、大量のトランザクションを生成するユースケース（ゲームやソーシャルdAppsなど）に適しています。
 
 ## ステップ 3: Orbit チェーンのdeploymentを設定する
 [Orbitチェーンデプロイメントポータル](https://orbit.arbitrum.io/)にアクセスしてください。そうするとウォレットを接続するよう求められます。**Arbitrum Goerli**または**Arbitrum Sepolia**ネットワークをウォレットに追加するか、ウォレットをこのネットワークに切り替えるように求められる場合があります。これを承認してください。
@@ -79,9 +80,10 @@ import { PlaceholderForm } from '/src/components/PlaceholderForm/PlaceholderForm
 
 このステップで指定した各バリデーターアドレスは、チェーンのいずれかの**ベースコントラクト**の許可リストに追加されます。各バリデーターは**ステーキング**が完了した後、Orbitチェーンに送信されたトランザクションを検証できるようになります。
 
-:::info NEW TERMINOLOGY
-新しい用語
-“「ベースコントラクト」”と「”ベースチェーン」”は、それぞれ、Orbit チェーン自体の L2コントラクトと、それらがデプロイされるL2 チェーンを指します。このガイドの残りの部分では、これらの用語を使用します。
+:::info 新しい用語
+
+「ベースコントラクト」と「ベースチェーン」は、それぞれ、Orbitチェーン自体のL2コントラクトと、それらがデプロイされるL2チェーンを指します。このガイドの残りの部分では、これらの用語を使用します。
+
 :::
 <!-- possible cut (meaning is unclear): or even challenges staker of a specific RBlock. -->
 
@@ -95,14 +97,14 @@ import { PlaceholderForm } from '/src/components/PlaceholderForm/PlaceholderForm
 
 バッチ投稿者アドレスは、Orbitチェーンからそのベースチェーン上のベースコントラクトにトランザクションのバッチを投稿する責任があります。なおアドレスは自動的に生成されます。秘密鍵は自動的に生成され、JSONコンフィギュレーションファイルの一つに保存されます。
 
-バッチ投稿者のアドレスが設定された後、`Next`をクリックし、次のステップ：Orbit **チェーンを確認、及びデプロイ**に進みます。
+バッチ投稿者のアドレスが設定された後、`Next`をクリックし、次のステップ：Orbit**チェーンを確認、及びデプロイ**に進みます。
 
 ## ステップ 6: Orbitチェーンを確認し、デプロイする
 OrbitチェーンのベースコントラクトをArbitrum GoerliまたはSepoliaにデプロイします
 
 <!-- todo: label-casing alignment - could sentence-case in UI -->
 
-設定フォームの下にある`Deploy`ボタンをクリックすると、ウォレットから、Arbitrum テストネットにトランザクションを送信するよう促されます。多少のガス代を支払う必要があります。あなたのウォレットはこれをETHで支払うことを要求します。トランザクションの詳細で、選択したArbitrumテストネットが表示されている限り、このガス代はテストネットETHで支払われます。
+設定フォームの下にある`Deploy`ボタンをクリックすると、ウォレットから、Arbitrumテストネットにトランザクションを送信するよう促されます。多少のガス代を支払う必要があります。あなたのウォレットはこれをETHで支払うことを要求します。トランザクションの詳細で、選択したArbitrumテストネットが表示されている限り、このガス代はテストネットETHで支払われます。
 
 次に進む前に、今までの手順を簡単に振り返ります：
 - パブリックL2チェーンであるArbitrumテストネット上にある、Orbitの”factory”スマートコントラクトにデプロイメントトランザクションを送信しました。このローカルOrbitチェーンは、指定されたArbitrumテストネットにトランザクションを決済します。
@@ -112,7 +114,7 @@ Orbitチェーンのベースコントラクトは、Orbitチェーンのノー�
 
 AnyTrustチェーンをデプロイした場合は、トランザクションが完了した際、次にキーセットを設定します。それ以外の場合は[ステップ8](#step-8-download-your-chains-configuration-files-and-launch-your-chain)に進み、設定ファイルをダウンロードし、チェーンを起動します。
 
-## ステップ 7: キーセットを設定する(AnyTrust チェーンのみ)
+## ステップ 7: キーセットを設定する(AnyTrustチェーンのみ)
 
 :::info ロールアップチェーンには適用されません
 
@@ -124,9 +126,9 @@ AnyTrustチェーンをデプロイした場合は、トランザクションが
 
 Orbit AnyTrustチェーンの現在のバージョンは単一のData Availability Serverを使用し、初期のキーセットを生成するために秘密鍵をnullに設定しています。トランザクションプロセスの一環として、この初期キーセットを`SequencerInbox`コントラクトに割り当てます。
 
-Deployment Summaryの下にある`Deploy`ボタンをクリックしてください。ウォレットから Arbitrumテストネットにトランザクションを送信することが請求されます。ガス代は前回のトランザクションとほぼ同じコストです。
+Deployment Summaryの下にある`Deploy`ボタンをクリックしてください。ウォレットからArbitrumテストネットにトランザクションを送信することが請求されます。ガス代は前回のトランザクションとほぼ同じコストです。
 
-トランザクションが完了すると、チェーンのデプロイメントを続行するためのダウンロード ページに移動します。
+トランザクションが完了すると、チェーンのデプロイメントを続行するためのダウンロードページに移動します。
 
 ## ステップ 8: チェーンの設定ファイルをダウンロードし、チェーンをローンチする
 `Rollup Config`と`L3 Config`と書かれた二つのJSONコードブロックが表示されます。各コードブロックの右上にあるダウンロードボタンをクリックし、コードブロックをローカルに保存します。
@@ -142,9 +144,9 @@ Deployment Summaryの下にある`Deploy`ボタンをクリックしてくださ
 4. `orbit-setup-script`リポジトリのルートから`yarn install`を実行して依存関係をインストールします。
 
 ## ステップ 10: チェーンのノードとブロックエクスプローラーを実行する
-Docker を実行し、`orbit-setup-script`リポジトリのルートから`docker-compose up -d`を実行します。
+Dockerを実行し、`orbit-setup-script`リポジトリのルートから`docker-compose up -d`を実行します。
 
-Nitroノードと BlockScoutエクスプローラーインスタンスが開始されます。[http://localhost:4000/](http://localhost:4000/)にアクセスして、BlockScoutエクスプローラーインスタンスにアクセスできます。これにより、チェーンのトランザクションとブロックを表示できるようになり、デバッグに役立ちます。
+NitroノードとBlockScoutエクスプローラーインスタンスが開始されます。[http://localhost:4000/](http://localhost:4000/)にアクセスして、BlockScoutエクスプローラーインスタンスにアクセスできます。これにより、チェーンのトランザクションとブロックを表示できるようになり、デバッグに役立ちます。
 
 ## ステップ 11:　チェーンセットアップを完了する
 私たちは下記のタスクを処理するHardhatスクリプトを提供しています：
@@ -169,17 +171,17 @@ Arbitrum Sepoliaの場合:
 PRIVATE_KEY="0xYourPrivateKey" L2_RPC_URL="https://sepolia-rollup.arbitrum.io/rpc" L3_RPC_URL="http://localhost:8449" yarn run setup
 ```
 
-## Congratulations！
-ローカルOrbit チェーンが実行されました。スクリプトフォルダーのメインディレクトリに`outputInfo.json`ファイルが表示されます。ここには、チェーンのベースコントラクトのアドレスなど、チェーンに関する詳細情報が含まれています。
+## おめでとうございます！
+ローカルOrbitチェーンが実行されました。スクリプトフォルダーのメインディレクトリに`outputInfo.json`ファイルが表示されます。ここには、チェーンのベースコントラクトのアドレスなど、チェーンに関する詳細情報が含まれています。
 
-### 付録 A:
+### 付録 A: ログ
 クローンされたOrbitセットアップスクリプトリポジトリのルートディレクトリで次のコマンドを実行すると、チェーンのログを表示できます。
 
 ```shell
 docker-compose logs -f nitro
 ```
 
-### 付録 B:
+### 付録 B: ETH/ネイティブトークンを入金する
 バリデーターアドレス、またはバッチポスターアドレスにさらにETHを入金する必要がある場合は、セットアップスクリプトのベースディレクトリで次のコマンドを`0xYourPrivateKey`と`<AMOUNT>`を置き換えて実行します。
 
 Arbitrum Sepoliaの場合:
@@ -196,5 +198,5 @@ AMOUNT="<AMOUNT>" yarn run deposit
 ```
 
 ### 付録 C:
-ノードの出力ログ (付録 A より) に`error getting latest batch count`が表示される場合があります。これはOrbit チェーンのベースコントラクトのデプロイがL1 チェーン上でまだ完了していないときに表示されます。このファイナライズには 15 ～ 20 分かかることがありますが、心配する必要はありません。チェーンが適切に機能するためにデプロイメントを L1 ファイナライズする必要はなく、通常これは無視しても問題ありません。
+ノードの出力ログ(付録Aより)に`error getting latest batch count`が表示される場合があります。これはOrbitチェーンのベースコントラクトのデプロイがL1チェーン上でまだ完了していないときに表示されます。このファイナライズには15～20分かかることがありますが、心配する必要はありません。チェーンが適切に機能するためにデプロイメントをL1ファイナライズする必要はなく、通常これは無視しても問題ありません。
 
