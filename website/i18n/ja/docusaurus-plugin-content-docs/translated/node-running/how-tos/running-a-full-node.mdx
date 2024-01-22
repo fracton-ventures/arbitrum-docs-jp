@@ -1,0 +1,101 @@
+---
+title: 'Nitroフルノードの実行方法'
+description: Learn how to run an Arbitrum node on your local machine.
+sidebar_label: フルノードを実行 (Nitro)
+sidebar_position: 1
+content-type: how-to
+---
+
+:::info
+
+Arbitrum のフルノードを実行するためのプロトコルレベルのインセンティブはありません。Arbitrum チェーンへのアクセスに興味があるが、自分のノードを立ち上げたくない場合は、[ノードプロバイダー](../node-providers.mdx)を参照し、第三者ノードプロバイダーの RPC を利用してください。
+
+:::
+
+### ハードウェアの最小要件
+
+- 以下は、Nitro フルノード(アーカイブノードではありません)のセットアップに必要な最小限のハードウェア構成になります：
+  - RAM: 8-16 GB
+  - CPU: 2-4 コア CPU (AWS の場合: t3 xLarge)
+  - ストレージ：最小 1.2TB SSD(拡張可能であることを確認してください)
+  - 推定日次ストレージ要求増加率：約 3GB/日
+
+:::info
+
+最低限必要なストレージは、時間が経過し Nitro チェーンが成長するにつれ増加します。フルノードを堅牢に稼動させるためには、できる限り最小要件を上回ることをお勧めします。
+
+:::
+
+### 前提要件
+
+- 最新の Docker Image：`offchainlabs/nitro-node:v2.1.3-e815395`
+- データベーススナップショット(Arbitrum One では必須ですが、他のチェーンではオプションになります)
+  - 初回起動時に`--init.url` パラメータを使用して、Nitro データベースを初期化してください(スナップショットの一覧は[こちら](https://snapshot.arbitrum.foundation/index.html))。例：`--init.url="https://snapshot.arbitrum.foundation/arb1/nitro-pruned.tar"`
+  - 複数のノードを実行する場合は、スナップショットのイメージを手動でダウンロードして、ローカルでホストする方が簡単です。その後、`--init.url="file:///path/to/snapshot/in/container/snapshot-file.tar"`を使用してください。
+  - Arbitrum One には Classic ブロックがあるため、初期化する際にスナップショットパラメータが**必要になります**。それ以外のチェーンでは、そのパラメータはオプションです。
+  - 既存のデータベースが存在する場合、このパラメータを省略しても大丈夫です。
+
+### 必須パラメータ
+
+- L1 RPC URL
+  - `--parent-chain.connection.url=<Layer 1 Ethereum RPC URL>` パラメータを使用する。
+  - 独自でノードを運行する、又は第三者が運行する標準的なレイヤー 1 のノード RPC エンドポイントを利用する必要があります。
+  - 注: このパラメータは v2.1.0 以前のバージョンでは　--l1.url と呼ばれていました。
+- L2 チェーン ID または名前
+  - ` --chain.id=<L2 chain ID>` パラメータを使用して、チェーン ID から L2 チェーンを設定します。Arbitrum チェーンとそれぞれの L2 チェーン ID のリストについては、[「RPC エンドポイントとプロバイダー」](/node-running/node-providers.mdx#rpc-endpoints)を参照してください。
+  - あるいは `--chain.name=<L2 chain name>` パラメータを使用して名前から L2 チェーンを設定することもできます (オプションは、`arb1`、`nova`、`goerli-rollup` および `sepolia-rollup`)。
+  - 注: このパラメータは --l2.chain-id と呼ばれ、`v2.1.0` 以前のバージョンではチェーン ID のみを受け入れていました。
+
+### 重要なポート
+
+- RPC：`8547`
+- シーケンサーフィード：`9642`
+- WebSocket：`8548`
+  - WS ポート `8548` を開くには、追加引数が必要です。以下のフラグを使用してください：
+    - --ws.port=8548
+    - --ws.addr=0.0.0.0
+    - --ws.origins=\*
+
+### まとめ
+
+- Docker イメージを実行する場合、再起動に渡ってデータベースを永続化するために外部ボリュームをマウントする必要があります。マウントポイントは `/home/user/.arbitrum` に必ず設定してください。
+
+- 以下が nitro-node の実行例です：
+  - `some/local/dir/arbitrum` がすでに存在していることを確認してください。そうでない場合、 `root` をオーナーとしてディレクトリが作成され、Docker コンテナはそこに書き込むことができない可能性があります。
+
+```shell
+ docker run --rm -it  -v /some/local/dir/arbitrum:/home/user/.arbitrum -p 0.0.0.0:8547:8547 -p 0.0.0.0:8548:8548 @latestNitroNodeImage@ --parent-chain.connection.url https://l1-node:8545 --chain.id=<L2ChainId> --http.api=net,web3,eth,debug --http.corsdomain=* --http.addr=0.0.0.0 --http.vhosts=*
+```
+
+<! --I can't make the following indent due to prettier-->
+
+- L1 ノードを localhost で実行する場合、docker のホストベースネットワーキングを使用するには、`docker run` の直後に `--network host` を追加する必要があります。
+- docker イメージをシャットダウンする際には、現在の状態をディスクに保存できるように、正常にシャットダウンを行うことが重要です。以下は、現在実行中のすべての docker イメージを正常にシャットダウンする方法の例です。
+
+```shell
+docker stop --time=300 $(docker ps -aq)
+```
+
+### 権限に関して
+
+- Docker イメージは、non-root UID 1000 として実行されるように設定されています。つまり、Linux 上で実行し、Docker イメージを実行しようとするとパーミッションエラーが発生する場合は、下記のコマンドを実行して、すべてのユーザーが永続フォルダーを更新できるようにしてください。
+  ```shell
+  mkdir /data/arbitrum
+  chmod -fR 777 /data/arbitrum
+  ```
+
+### Watchtower モード
+
+- デフォルトでは、フルノードはウォッチタワーモードで実行されます。これはノードがオンチェーンアサーションを監視するモードで、逸脱が検出された場合、ウォッチタワーモードで動作しているノードは、 `found incorrect assertion in watchtowermode` という文字列を含むエラーをログに記録します。
+- ウォッチタワーモードは実行とメモリーのオーバーヘッドが追加されます。パラメータ `--node.staker.enable=false` を使えば、このモードを無効にできます。
+
+### プルーニング
+
+- フルノードのプルーニングとは、ディスクスペースを節約し、ノードの効率をわずかに向上させるために、ノードが保持するブロックチェーンのローカルコピーから古い不要なデータを削除するプロセスを指します。プルーニングは、最新の 128 より古いブロックからすべての状態を削除します。
+- `--init.prune` パラメータを使用し、実行しているノードのタイプによって"full"または "validator "を使用することで、プルーニングを有効にすることができます。この処理はノードの起動時に行われ、プルーニング中は RPC リクエストに応答しないことに注意してください。
+
+### オプションのパラメータ
+
+import OptionalOrbitCompatibleCLIFlagsPartial from '../../partials/_optional-orbit-compatible-cli-flags-partial.md';
+
+<OptionalOrbitCompatibleCLIFlagsPartial />

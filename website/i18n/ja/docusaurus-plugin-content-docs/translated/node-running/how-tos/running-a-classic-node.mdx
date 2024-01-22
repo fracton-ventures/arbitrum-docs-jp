@@ -1,0 +1,79 @@
+---
+title: 'Classicノードの実行方法'
+description: Learn how to run an classic node on your local machine.
+sidebar_label: フルノード実行(Classic, pre-Nitro)
+sidebar_position: 2
+content-type: how-to
+---
+
+### Classic ノードは必要でしょうか
+
+Arbitrum One は最新の Arbitrum 技術スタックである Nitro にアップグレードされました。"Arbitrum Classic"とは、Arbitrum Nitro 以前の古い技術スタックを指します。Nitro ノードのデータベースは、Nitro 以前のブロックを含むすべてのブロックの生（Raw）データを持っています。しかし、Nitro ノードは Nitro 以前のブロックを実行できません。Nitro 以前のブロックのデータを実行するには、Arbitrum Classic アーカイブノードが必要です。
+
+Arbitrum Classic アーカイブノードを実行する場合、以下のコマンドがサポートされます：
+
+- `eth_call`
+- `eth_estimateGas`
+- `eth_getBalance`
+- `eth_getTransactionCount`
+- `eth_getStorageAt`
+
+🔉 Arbitrum Nova と Arbitrum Goerli はどちらも Nitro チェーンなので、Classic ブロックがないことに注意してください。
+
+### 必要なアーティファクト
+
+- 最新の Docker Image：`offchainlabs/arb-node:v1.4.5-e97c1a4`
+- 最新の Arbitrum Classic スナップショット：https://snapshot.arbitrum.foundation/arb1/classic-archive.tar
+
+### 必要なパラメータ
+
+- `--l1.url=<Layer 1 Ethereum RPC URL>`
+  標準的な Ethereum ノードの RPC エンドポイントを提供する必要があります
+- `--node.chain-id=<L2 チェーンID>`
+  - Arbitrum One では`42161`を使用する必要があります
+
+### 重要なポート
+
+- RPC：`8547`
+- ウェブソケット：`8548`
+
+### 全部まとめると
+
+- Docker Image を実行する場合、再起動をまたいでデータベースを保持するために外部ボリュームをマウントする必要があります。マウントポイントは`/home/user/.arbitrum/mainnet`になります。
+- 以下は Arbitrum One 用の Classic アーカイブノードを実行する方法の例です（Nitro 以前のブロックのアーカイブ要求にのみ必要なので、おそらく Nitro ノードでもアーカイブモードを有効にする必要があるでしょう）：
+
+```shell
+docker run --rm -it  -v /some/local/dir/arbitrum-mainnet/:/home/user/.arbitrum/mainnet -p 0.0.0.0:8547:8547 -p 0.0.0.0:8548:8548 @latestClassicNodeImage@ --l1.url=https://l1-node:8545 --node.chain-id=42161 --l2.disable-upstream
+```
+
+### 権限に関して
+
+- Docker Image は、non-root UID 1000 として実行されるように設定されています。つまり、Linux 上で実行ており、Docker Image を実行しようとするとパーミッションエラーが発生する場合は、下記のコマンドを実行して、すべてのユーザーが永続フォルダーを更新できるようになります。
+
+```shell
+mkdir /some/local/dir/arbitrum-mainnet
+chmod -fR 777 /some/local/dir/arbitrum-mainnet
+```
+
+### オプションのパラメータ
+
+- `--core.cache.timed-expire`
+  - デフォルトは`20m`（20 分）。キャッシュに保持する最も古いブロックの経過時間。
+- `--node.rpc.max-call-gas`
+  - デフォルトは`5000000`。ノードがコールで使用するガスの最大量です。
+- `--core.checkpoint-gas-frequency`
+  - デフォルトは`1000000000`。チェックポイントをディスクに保存するまでのガスを設定します。アーカイブクエリを行う場合、ノードは最も近い以前のチェックポイントをロードし、要求されたブロックまで実行する必要があります。チェックポイントの間隔が離れれば離れるほど、実行に要する時間は長くなります。しかし、チェックポイントを頻繁に保存すると、一般的にノードの動作が遅くなります。
+- `--node.cache.allow-slow-lookup`
+  - このオプションを利用する場合、メモリキャッシュにない古いブロックをディスクからロードします
+  - アーカイブのサポートが必要な場合は、`--node.cache.allow-slow-lookup --core.checkpoint-gas-frequency=156250000`の使用を推奨します
+- `--node.rpc.tracing.enable`
+  - 以前のトランザクションをトレースしたい場合は、データベースにアーカイブノードを設定する必要があることに注意してください
+  - このオプションは、parity tracing API に着想を得た、トレース API を呼び出す機能を有効にします。
+    - 例:`curl http://arbnode -X POST -H "Content-Type: application/json" -d '{"jsonrpc": "2.0", "method": "arbtrace_call", "params":[{"to"："0x6b175474e89094c44da98b954eedeac495271d0f","data":"0x70a082310000000000000000000000006E0d01A76C3Cf4288372a29124A26D4353EE51BE"},["trace"], "latest"],"id":67}'`
+  - `trace_*`メソッドは、`arbtrace_*`に名前が変更されます。ただし`trace_rawTransaction`はサポートされていません。
+  - `trace`タイプのみがサポートされています。`vmTrace`と`stateDiff`はサポートされていません
+  - self-desctruct のオペコードはトレースに含まれません。self-desctruct されたコントラクトのリストを取得するには、`deletedContracts`メソッドにパラメータを指定してください
+
+### フィードリレー
+
+- ArbitrumClassic は Nitro シーケンサーと通信しないので、Classic リレーは使われなくなりました。
