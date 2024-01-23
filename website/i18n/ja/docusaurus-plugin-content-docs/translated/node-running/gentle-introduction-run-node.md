@@ -11,7 +11,7 @@ Arbitrumチェーン上でアプリケーションを操作したり構築した
 
 ここでは、さまざまなタイプのArbitrumノードを実行するのに役立つリソースを見つけることができます：
 - [Nitroフルノード](./how-tos/running-a-full-node.mdx)、[Classicフルノード](./how-tos/running-a-classic-node.mdx)、[ローカル開発ノード](./how-tos/local-dev-node.mdx)、[フィードリレー](./how-tos/running-a-feed-relay.mdx)、[バリデータ](./how-tos/running-a-validator.mdx)など、さまざまなArbitrumノードの実行方法を一歩ずつ説明
-- [シーケンサーフィードの読み込み](./how-tos/read-sequencer-feed.md)、[Nitroをローカルにbuildする](./how-tos/build-nitro-locally.md)、[DASを実行する方法](./how-tos/running-a-daserver.mdx)を一歩ずつ説明
+- [シーケンサーフィードの読み込み](./how-tos/read-sequencer-feed.md)、[Nitroをローカルにbuildする](./how-tos/build-nitro-locally.md)、[DASを実行する方法](./how-tos/running-a-daserver.mdx)、[シーケンサーコーディネーションマネジャーの実行方法](./how-tos/running-a-sequencer-coordinator-manager)を一歩ずつ説明
 - [トラブルシューティングページ](./troubleshooting-running-nodes.md)
 - [よくある質問](./faq.md)
 
