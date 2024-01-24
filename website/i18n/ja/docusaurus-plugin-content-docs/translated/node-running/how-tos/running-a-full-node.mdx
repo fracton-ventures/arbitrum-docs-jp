@@ -16,8 +16,8 @@ Arbitrum のフルノードを実行するためのプロトコルレベルの�
 
 - 以下は、Nitro フルノード(アーカイブノードではありません)のセットアップに必要な最小限のハードウェア構成になります：
   - RAM: 8-16 GB
-  - CPU: 2-4 コア CPU (AWS の場合: t3 xLarge)
-  - ストレージ：最小 1.2TB SSD(拡張可能であることを確認してください)
+  - CPU: 2-4 コア CPU（AWS の場合: t3 xLarge）
+  - ストレージ：最小 1.2TB SSD（拡張可能であることを確認してください）
   - 推定日次ストレージ要求増加率：約 3GB/日
 
 :::info
@@ -28,11 +28,16 @@ Arbitrum のフルノードを実行するためのプロトコルレベルの�
 
 ### 前提要件
 
+:::caution リリースバージョンのみ使用してください
+
+Arbitrum Nitro ソフトウェアは alpha および beta バージョンが存在しますが、ノードを実行する際にはリリースバージョンのみをしようしてください。alpha または beta バージョンの実行はサポートされておらず、予測できない動作が発生する可能性があります。
+:::
+
 - 最新の Docker Image：`offchainlabs/nitro-node:v2.1.3-e815395`
 - データベーススナップショット(Arbitrum One では必須ですが、他のチェーンではオプションになります)
   - 初回起動時に`--init.url` パラメータを使用して、Nitro データベースを初期化してください(スナップショットの一覧は[こちら](https://snapshot.arbitrum.foundation/index.html))。例：`--init.url="https://snapshot.arbitrum.foundation/arb1/nitro-pruned.tar"`
   - 複数のノードを実行する場合は、スナップショットのイメージを手動でダウンロードして、ローカルでホストする方が簡単です。その後、`--init.url="file:///path/to/snapshot/in/container/snapshot-file.tar"`を使用してください。
-  - Arbitrum One には Classic ブロックがあるため、初期化する際にスナップショットパラメータが**必要になります**。それ以外のチェーンでは、そのパラメータはオプションです。
+  - Arbitrum One には`クラシックブロック`があるため、初期化する際にスナップショットパラメータが**必要になります**。それ以外のチェーンでは、そのパラメータはオプションです。
   - 既存のデータベースが存在する場合、このパラメータを省略しても大丈夫です。
 
 ### 必須パラメータ
@@ -67,8 +72,6 @@ Arbitrum のフルノードを実行するためのプロトコルレベルの�
  docker run --rm -it  -v /some/local/dir/arbitrum:/home/user/.arbitrum -p 0.0.0.0:8547:8547 -p 0.0.0.0:8548:8548 @latestNitroNodeImage@ --parent-chain.connection.url https://l1-node:8545 --chain.id=<L2ChainId> --http.api=net,web3,eth,debug --http.corsdomain=* --http.addr=0.0.0.0 --http.vhosts=*
 ```
 
-<! --I can't make the following indent due to prettier-->
-
 - L1 ノードを localhost で実行する場合、docker のホストベースネットワーキングを使用するには、`docker run` の直後に `--network host` を追加する必要があります。
 - docker イメージをシャットダウンする際には、現在の状態をディスクに保存できるように、正常にシャットダウンを行うことが重要です。以下は、現在実行中のすべての docker イメージを正常にシャットダウンする方法の例です。
 
@@ -95,6 +98,8 @@ docker stop --time=300 $(docker ps -aq)
 - `--init.prune` パラメータを使用し、実行しているノードのタイプによって"full"または "validator "を使用することで、プルーニングを有効にすることができます。この処理はノードの起動時に行われ、プルーニング中は RPC リクエストに応答しないことに注意してください。
 
 ### オプションのパラメータ
+
+以下は、ノードを実行する際に最も一般的に使用されるパラメータです。また、利用可能なパラメータをすべて参照するには、`--help` フラグを利用してください。
 
 import OptionalOrbitCompatibleCLIFlagsPartial from '../../partials/_optional-orbit-compatible-cli-flags-partial.md';
 
